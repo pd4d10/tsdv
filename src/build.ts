@@ -13,6 +13,7 @@ export async function buildJs(config: ResolvedConfig, watch = false) {
   await viteBuild({
     root: config.root,
     // logLevel: 'silent',
+    clearScreen: false,
     build: {
       emptyOutDir: false,
       target: config.target,
@@ -39,7 +40,7 @@ export async function buildDts(config: ResolvedConfig, watch = false) {
   await execa(
     'tsc',
     [
-      ...(watch ? ['--watch'] : []),
+      ...(watch ? ['--watch', '--preserveWatchOutput'] : []),
       '--outDir',
       config.outDir,
       '--rootDir',
