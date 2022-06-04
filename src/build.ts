@@ -59,9 +59,9 @@ export async function bundleDts(config: ResolvedConfig) {
   const { Extractor, ExtractorConfig } = await prepareApiExtractor()
 
   const externalDeps = readExternalDeps(config.packageJson)
-  const entry = (config.entry ?? 'src/index.ts')
-    .replace('src', 'dist/types')
-    .replace('.ts', '.d.ts') // TODO:
+  const entry = config.entry
+    .replace('src', config.outDir)
+    .replace('.ts', '.d.ts')
   const typeOut = path.resolve(os.tmpdir(), 'out.d.ts')
 
   const messageLevel: any = {
