@@ -5,7 +5,7 @@ import { build as viteBuild } from 'vite'
 import { execa } from 'execa'
 import { ResolvedConfig } from './config.js'
 import { prepareApiExtractor, readExternalDeps } from './utils.js'
-import { IConfigFile } from '@microsoft/api-extractor'
+import type { IConfigFile } from '@microsoft/api-extractor'
 
 export async function buildJs(config: ResolvedConfig, watch = false) {
   const externalDeps = readExternalDeps(config.packageJson)
@@ -56,14 +56,17 @@ export async function buildDts(config: ResolvedConfig, watch = false) {
 }
 
 export async function bundleDts(config: ResolvedConfig) {
-  const { Extractor, ExtractorConfig, ExtractorLogLevel } =
-    await prepareApiExtractor()
+  const { Extractor, ExtractorConfig } = await prepareApiExtractor()
 
   const externalDeps = readExternalDeps(config.packageJson)
   const entry = (config.entry ?? 'src/index.ts')
     .replace('src', 'dist/types')
     .replace('.ts', '.d.ts') // TODO:
   const typeOut = path.resolve(os.tmpdir(), 'out.d.ts')
+
+  const messageLevel: any = {
+    default: { logLevel: 'none' },
+  }
 
   const aeConfig: IConfigFile = {
     mainEntryPointFilePath: path.resolve(config.root, entry),
@@ -77,15 +80,9 @@ export async function bundleDts(config: ResolvedConfig) {
     },
     bundledPackages: externalDeps,
     messages: {
-      compilerMessageReporting: {
-        default: { logLevel: ExtractorLogLevel.None },
-      },
-      extractorMessageReporting: {
-        default: { logLevel: ExtractorLogLevel.None },
-      },
-      tsdocMessageReporting: {
-        default: { logLevel: ExtractorLogLevel.None },
-      },
+      compilerMessageReporting: messageLevel,
+      extractorMessageReporting: messageLevel,
+      tsdocMessageReporting: messageLevel,
     },
   }
   const aeConfigFile = path.resolve(os.tmpdir(), 'api-extractor.json')

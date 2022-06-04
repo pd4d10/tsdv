@@ -18,4 +18,5 @@ export async function build(config: InlineConfig) {
   await bundleDts(resolved)
 }
 
-export { UserConfig, defineConfig } from './config.js'
+export type { UserConfig } from './config.js'
+export { defineConfig } from './config.js'
