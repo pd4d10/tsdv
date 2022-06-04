@@ -6,6 +6,9 @@
   "bin": {
     "tsdv": "lib/cli.js"
   },
+  "files": [
+    "lib"
+  ],
   "main": "lib/index.js",
   "scripts": {
     "dev": "tsc --watch",
