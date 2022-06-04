@@ -28,7 +28,7 @@ export interface UserConfig
   /**
    * Output bundle formats
    *
-   * @default ['es', 'umd']
+   * @default ['es', 'cjs', 'umd']
    */
   formats?: LibraryOptions['formats']
   /**
@@ -73,7 +73,7 @@ export async function resolveConfig(
   const entry = config.entry ?? 'src/index.ts'
   const name = config.name ?? camelCase(packageJson.name)
   const fileName = config.fileName ?? path.basename(entry, path.extname(entry))
-  const formats = config.formats ?? ['es', 'umd']
+  const formats = config.formats ?? ['es', 'cjs', 'umd']
   const target = config.target ?? 'esnext'
   const outDir = config.outDir ?? 'dist'
 
