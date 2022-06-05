@@ -17,7 +17,7 @@ export function readExternalDeps(pkg: ResolvedConfig['packageJson']) {
 }
 
 export async function prepareApiExtractor() {
-  const ts = await import('typescript')
+  const { default: ts } = await import('typescript')
   const ae = await import('@microsoft/api-extractor')
   const { ExportAnalyzer } = await import(
     '@microsoft/api-extractor/lib/analyzer/ExportAnalyzer.js'
