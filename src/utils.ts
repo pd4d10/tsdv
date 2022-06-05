@@ -1,3 +1,4 @@
+import fs from 'fs-extra'
 import os from 'os'
 import path from 'path'
 import { ResolvedConfig } from './config.js'
@@ -73,6 +74,16 @@ export async function prepareApiExtractor() {
 }
 
 // write to a temp dir, then copy to `outDir`
-export function resolveTempFile(config: ResolvedConfig, ...paths: string[]) {
-  return path.resolve(os.tmpdir(), 'tsdv', config.packageJson.name, ...paths)
+export async function resolveTempFile(
+  config: ResolvedConfig,
+  ...paths: string[]
+) {
+  const file = path.resolve(
+    os.tmpdir(),
+    'tsdv',
+    config.packageJson.name,
+    ...paths
+  )
+  await fs.ensureDir(path.dirname(file))
+  return file
 }

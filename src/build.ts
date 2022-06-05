@@ -70,7 +70,7 @@ export async function bundleDts(config: ResolvedConfig) {
     default: { logLevel: 'none' },
   }
 
-  const outFile = resolveTempFile(config, entry)
+  const outFile = await resolveTempFile(config, entry)
 
   const aeConfig: IConfigFile = {
     mainEntryPointFilePath: path.resolve(config.root, entry),
@@ -89,7 +89,7 @@ export async function bundleDts(config: ResolvedConfig) {
       tsdocMessageReporting: messageLevel,
     },
   }
-  const aeConfigFile = resolveTempFile(config, 'api-extractor.json')
+  const aeConfigFile = await resolveTempFile(config, 'api-extractor.json')
   await fs.writeJson(aeConfigFile, aeConfig)
 
   const configObject = ExtractorConfig.loadFile(aeConfigFile)
