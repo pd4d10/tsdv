@@ -9,7 +9,7 @@ yargs(hideBin(process.argv))
     '',
     () => {},
     async () => {
-      const config = await readConfig()
+      const { default: config } = await readConfig()
       watch(config)
     }
   )
@@ -19,7 +19,7 @@ yargs(hideBin(process.argv))
     '',
     () => {},
     async () => {
-      const config = await readConfig()
+      const { default: config } = await readConfig()
       build(config)
     }
   )

@@ -37,6 +37,7 @@ export async function buildJs(config: ResolvedConfig, watch = false) {
         ],
       },
     },
+    plugins: config.plugins,
   })
 }
 

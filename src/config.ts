@@ -70,7 +70,7 @@ export function defineConfig(config: UserConfig) {
   return config
 }
 
-export async function readConfig(): Promise<UserConfig> {
+export async function readConfig() {
   const file = await findUp('tsdv.config.mjs')
   if (!file) return {}
 
