@@ -36,7 +36,6 @@
     "find-up": "^6.3.0",
     "fs-extra": "^10.1.0",
     "lodash-es": "^4.17.21",
-    "type-fest": "^2.13.0",
     "vite": "3.0.0-alpha.9",
     "vitest": "^0.13.1",
     "yargs": "^17.5.1"

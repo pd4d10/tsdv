@@ -9,7 +9,6 @@ import {
 } from 'vite'
 import {} from 'vitest'
 import { camelCase } from 'lodash-es'
-import { SetRequired } from 'type-fest'
 
 export interface UserConfig
   extends Pick<BuildOptions, 'sourcemap' | 'minify' | 'outDir'> {
@@ -57,11 +56,7 @@ export interface UserConfig
 
 export interface InlineConfig extends UserConfig {}
 
-export interface ResolvedConfig
-  extends SetRequired<
-    UserConfig,
-    'entry' | 'name' | 'fileName' | 'formats' | 'target' | 'outDir'
-  > {
+export interface ResolvedConfig extends Required<UserConfig> {
   root: string
   packageJson: any // TODO:
 }
@@ -86,21 +81,23 @@ export async function resolveConfig(
   const packageJson = await fs.readJson(filePath)
 
   const entry = config.entry ?? 'src/index.ts'
-  const name = config.name ?? camelCase(packageJson.name)
   const fileName = config.fileName ?? path.basename(entry, path.extname(entry))
-  const formats = config.formats ?? ['es', 'cjs', 'umd']
-  const target = config.target ?? 'esnext'
-  const outDir = config.outDir ?? 'dist'
 
   return {
     ...config,
     entry,
-    name,
+    name: config.name ?? camelCase(packageJson.name),
     fileName,
-    formats,
-    target,
-    outDir,
-    plugins: config.plugins,
+    formats: config.formats ?? ['es', 'cjs', 'umd'],
+    target: config.target ?? 'esnext',
+    tsc: config.tsc ?? true,
+    plugins: config.plugins ?? [],
+
+    sourcemap: config.sourcemap ?? false,
+    minify: config.minify ?? 'esbuild',
+    outDir: config.outDir ?? 'dist',
+
+    // extra fields
     root: path.dirname(filePath),
     packageJson,
   }
