@@ -1,10 +1,13 @@
 import fs from 'fs-extra'
 import path from 'path'
-import os from 'os'
 import { build as viteBuild } from 'vite'
 import { execa } from 'execa'
 import { ResolvedConfig } from './config.js'
-import { prepareApiExtractor, readExternalDeps } from './utils.js'
+import {
+  resolveTempFile,
+  prepareApiExtractor,
+  readExternalDeps,
+} from './utils.js'
 import type { IConfigFile } from '@microsoft/api-extractor'
 
 export async function buildJs(config: ResolvedConfig, watch = false) {
@@ -15,7 +18,8 @@ export async function buildJs(config: ResolvedConfig, watch = false) {
     // logLevel: 'silent',
     clearScreen: false,
     build: {
-      emptyOutDir: false,
+      outDir: config.outDir,
+      emptyOutDir: !watch,
       target: config.target,
       minify: config.minify,
       sourcemap: config.sourcemap,
@@ -62,11 +66,11 @@ export async function bundleDts(config: ResolvedConfig) {
   const entry = config.entry
     .replace('src', config.outDir)
     .replace('.ts', '.d.ts')
-  const typeOut = path.resolve(os.tmpdir(), 'out.d.ts')
-
   const messageLevel: any = {
     default: { logLevel: 'none' },
   }
+
+  const outFile = resolveTempFile(config, entry)
 
   const aeConfig: IConfigFile = {
     mainEntryPointFilePath: path.resolve(config.root, entry),
@@ -76,7 +80,7 @@ export async function bundleDts(config: ResolvedConfig) {
     tsdocMetadata: { enabled: false },
     dtsRollup: {
       enabled: true,
-      untrimmedFilePath: typeOut,
+      untrimmedFilePath: outFile,
     },
     bundledPackages: externalDeps,
     messages: {
@@ -85,7 +89,7 @@ export async function bundleDts(config: ResolvedConfig) {
       tsdocMessageReporting: messageLevel,
     },
   }
-  const aeConfigFile = path.resolve(os.tmpdir(), 'api-extractor.json')
+  const aeConfigFile = resolveTempFile(config, 'api-extractor.json')
   await fs.writeJson(aeConfigFile, aeConfig)
 
   const configObject = ExtractorConfig.loadFile(aeConfigFile)
@@ -95,4 +99,13 @@ export async function bundleDts(config: ResolvedConfig) {
     packageJsonFullPath: path.resolve(config.root, 'package.json'),
   })
   Extractor.invoke(extractorConfig)
+
+  return {
+    async writeDts() {
+      await fs.copy(
+        outFile,
+        path.resolve(config.root, config.outDir, path.basename(outFile))
+      )
+    },
+  }
 }

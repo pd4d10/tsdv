@@ -1,3 +1,5 @@
+import os from 'os'
+import path from 'path'
 import { ResolvedConfig } from './config.js'
 
 export function readExternalDeps(pkg: ResolvedConfig['packageJson']) {
@@ -60,7 +62,7 @@ export async function prepareApiExtractor() {
       const packageName: string | undefined = resolvedModule.packageId?.name
 
       // @ts-ignore
-      console.log(packageName, this._bundledPackageNames)
+      // console.log(packageName, this._bundledPackageNames)
 
       // CHANGE BELOW
       // @ts-ignore
@@ -68,4 +70,9 @@ export async function prepareApiExtractor() {
     }
 
   return ae
+}
+
+// write to a temp dir, then copy to `outDir`
+export function resolveTempFile(config: ResolvedConfig, ...paths: string[]) {
+  return path.resolve(os.tmpdir(), 'tsdv', config.packageJson.name, ...paths)
 }
