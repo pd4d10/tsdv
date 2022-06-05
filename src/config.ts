@@ -38,6 +38,12 @@ export interface UserConfig
    * @default 'esnext'
    */
   target?: EsbuildTransformOptions['target']
+  /**
+   * Whether to run `tsc` to generate the typescript definition file.
+   *
+   * @default true
+   */
+  tsc?: boolean
 }
 
 export interface InlineConfig extends UserConfig {}

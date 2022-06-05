@@ -36,7 +36,7 @@ export async function buildJs(config: ResolvedConfig, watch = false) {
   })
 }
 
-export async function buildDts(config: ResolvedConfig, watch = false) {
+export async function runTsc(config: ResolvedConfig, watch = false) {
   await execa(
     'tsc',
     [
