@@ -1,7 +1,12 @@
 import fs from 'fs-extra'
 import path from 'path'
 import { findUp } from 'find-up'
-import { BuildOptions, EsbuildTransformOptions, LibraryOptions } from 'vite'
+import {
+  BuildOptions,
+  EsbuildTransformOptions,
+  LibraryOptions,
+  PluginOption,
+} from 'vite'
 import {} from 'vitest'
 import { camelCase } from 'lodash-es'
 import { SetRequired } from 'type-fest'
@@ -44,6 +49,10 @@ export interface UserConfig
    * @default true
    */
   tsc?: boolean
+  /**
+   * Vite plugins
+   */
+  plugins?: PluginOption[]
 }
 
 export interface InlineConfig extends UserConfig {}
@@ -91,6 +100,7 @@ export async function resolveConfig(
     formats,
     target,
     outDir,
+    plugins: config.plugins,
     root: path.dirname(filePath),
     packageJson,
   }
