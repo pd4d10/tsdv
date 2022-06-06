@@ -7,7 +7,7 @@ import {
   LibraryOptions,
   PluginOption,
 } from 'vite'
-import {} from 'vitest'
+import { InlineConfig as VitestConfig } from 'vitest'
 import { camelCase } from 'lodash-es'
 
 export interface UserConfig
@@ -52,6 +52,10 @@ export interface UserConfig
    * Vite plugins
    */
   plugins?: PluginOption[]
+  /**
+   * Vitest config
+   */
+  test?: VitestConfig
 }
 
 export interface InlineConfig extends UserConfig {}
@@ -96,6 +100,8 @@ export async function resolveConfig(
     sourcemap: config.sourcemap ?? false,
     minify: config.minify ?? 'esbuild',
     outDir: config.outDir ?? 'dist',
+
+    test: config.test ?? {},
 
     // extra fields
     root: path.dirname(filePath),

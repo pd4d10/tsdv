@@ -1,5 +1,6 @@
 import { runTsc, buildJs, bundleDts } from './build.js'
 import { InlineConfig, resolveConfig } from './config.js'
+import { runTest } from './test.js'
 
 export async function watch(config: InlineConfig) {
   const resolved = await resolveConfig(config)
@@ -17,6 +18,12 @@ export async function build(config: InlineConfig) {
   const { writeDts } = await bundleDts(resolved)
   await buildJs(resolved)
   await writeDts()
+}
+
+export async function test(config: InlineConfig) {
+  const resolved = await resolveConfig(config)
+
+  await runTest(resolved)
 }
 
 export type { UserConfig } from './config.js'

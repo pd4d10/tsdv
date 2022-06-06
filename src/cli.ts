@@ -1,6 +1,6 @@
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
-import { watch, build } from './index.js'
+import { watch, build, test } from './index.js'
 import { readConfig } from './config.js'
 
 yargs(hideBin(process.argv))
@@ -21,6 +21,16 @@ yargs(hideBin(process.argv))
     async () => {
       const { default: config } = await readConfig()
       build(config)
+    }
+  )
+
+  .command(
+    'test',
+    '',
+    () => {},
+    async () => {
+      const { default: config } = await readConfig()
+      test(config)
     }
   )
 
