@@ -1,39 +1,22 @@
-import yargs from 'yargs'
-import { hideBin } from 'yargs/helpers'
+import { cac } from 'cac'
 import { watch, build, test } from './index.js'
 import { readConfig } from './config.js'
 
-yargs(hideBin(process.argv))
-  .command(
-    'watch',
-    '',
-    () => {},
-    async () => {
-      const { default: config } = await readConfig()
-      watch(config)
-    }
-  )
+const cli = cac('tsdv').help()
 
-  .command(
-    'build',
-    '',
-    () => {},
-    async () => {
-      const { default: config } = await readConfig()
-      build(config)
-    }
-  )
+cli.command('watch').action(async () => {
+  const { default: config } = await readConfig()
+  await watch(config)
+})
 
-  .command(
-    'test',
-    '',
-    () => {},
-    async () => {
-      const { default: config } = await readConfig()
-      test(config)
-    }
-  )
+cli.command('build').action(async () => {
+  const { default: config } = await readConfig()
+  await build(config)
+})
 
-  .version()
-  .help()
-  .parse()
+cli.command('test').action(async () => {
+  const { default: config } = await readConfig()
+  await test(config)
+})
+
+cli.parse()
