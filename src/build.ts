@@ -2,15 +2,18 @@ import fs from 'fs-extra'
 import path from 'path'
 import { build as viteBuild } from 'vite'
 import { execa } from 'execa'
-import { Formats, ResolvedConfig } from './config.js'
+import { Formats, ResolvedConfig, _Formats } from './config.js'
 import { resolveTempFile, prepareApiExtractor } from './utils.js'
 import type { IConfigFile } from '@microsoft/api-extractor'
 
 export async function buildJs(
   config: ResolvedConfig,
   watch = false,
-  type: Formats
+  format: Formats
 ) {
+  const minify = format.endsWith('.min')
+  const type = format.replace('.min', '') as _Formats
+
   let externalDeps: string[] = []
 
   if (type === 'umd') {
@@ -54,11 +57,11 @@ export async function buildJs(
     // logLevel: 'silent',
     clearScreen: false,
     build: {
+      minify,
       outDir: config.outDir,
       emptyOutDir: false,
-      reportCompressedSize: type === 'umd',
+      // reportCompressedSize: false,
       target: config.target,
-      minify: type === 'umd',
       sourcemap: config.sourcemap,
       watch: watch ? {} : null,
       lib: {
@@ -68,7 +71,7 @@ export async function buildJs(
         fileName() {
           const base = path.basename(config.entry, path.extname(config.entry))
           const ext = type === 'es' ? 'mjs' : type === 'cjs' ? 'cjs' : 'js'
-          return base + '.' + ext
+          return `${base}${minify ? '.min' : ''}.${ext}`
         },
       },
       rollupOptions: {

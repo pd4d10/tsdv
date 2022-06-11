@@ -10,7 +10,8 @@ import {
 import { InlineConfig as VitestConfig } from 'vitest'
 import { camelCase } from 'lodash-es'
 
-export type Formats = 'es' | 'cjs' | 'umd'
+export type _Formats = 'es' | 'cjs' | 'umd'
+export type Formats = _Formats | `${_Formats}.min`
 
 export interface UserConfig extends Pick<BuildOptions, 'sourcemap' | 'outDir'> {
   /**
@@ -28,7 +29,7 @@ export interface UserConfig extends Pick<BuildOptions, 'sourcemap' | 'outDir'> {
   /**
    * Output bundle formats
    *
-   * @default ['es', 'cjs', 'umd']
+   * @default ['es', 'cjs', 'umd.min']
    */
   formats?: Formats[]
   /**
@@ -86,7 +87,7 @@ export async function resolveConfig(
     ...config,
     entry,
     name: config.name ?? camelCase(packageJson.name),
-    formats: config.formats ?? ['es', 'cjs', 'umd'],
+    formats: config.formats ?? ['es', 'cjs', 'umd.min'],
     target: config.target ?? 'esnext',
     tsc: config.tsc ?? true,
     plugins: config.plugins ?? [],
