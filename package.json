@@ -32,14 +32,14 @@
     "@microsoft/api-extractor": "^7.25.0",
     "@types/fs-extra": "^9.0.13",
     "@types/lodash-es": "^4.17.6",
-    "@types/node": "^17.0.41",
+    "@types/node": "^17.0.42",
     "cac": "^6.7.12",
     "execa": "^6.1.0",
     "find-up": "^6.3.0",
     "fs-extra": "^10.1.0",
     "lodash-es": "^4.17.21",
-    "vite": "alpha",
-    "vitest": "^0.14.1"
+    "vite": "^2.9.12",
+    "vitest": "^0.14.2"
   },
   "devDependencies": {
     "jsdom": "^19.0.0",

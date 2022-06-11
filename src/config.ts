@@ -25,11 +25,6 @@ export interface UserConfig
    */
   name?: string
   /**
-   * The name of the package file output. The default file base names are
-   * the same as entry file.
-   */
-  fileName?: string
-  /**
    * Output bundle formats
    *
    * @default ['es', 'cjs', 'umd']
@@ -85,13 +80,11 @@ export async function resolveConfig(
   const packageJson = await fs.readJson(filePath)
 
   const entry = config.entry ?? 'src/index.ts'
-  const fileName = config.fileName ?? path.basename(entry, path.extname(entry))
 
   return {
     ...config,
     entry,
     name: config.name ?? camelCase(packageJson.name),
-    fileName,
     formats: config.formats ?? ['es', 'cjs', 'umd'],
     target: config.target ?? 'esnext',
     tsc: config.tsc ?? true,

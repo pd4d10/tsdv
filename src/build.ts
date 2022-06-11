@@ -28,7 +28,11 @@ export async function buildJs(config: ResolvedConfig, watch = false) {
         entry: config.entry,
         name: config.name,
         formats: config.formats,
-        fileName: config.fileName,
+        fileName(format) {
+          const base = path.basename(config.entry, path.extname(config.entry))
+          const ext = format === 'es' ? 'mjs' : format === 'cjs' ? 'cjs' : 'js'
+          return base + '.' + ext
+        },
       },
       rollupOptions: {
         external: [
