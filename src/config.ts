@@ -10,8 +10,9 @@ import {
 import { InlineConfig as VitestConfig } from 'vitest'
 import { camelCase } from 'lodash-es'
 
-export interface UserConfig
-  extends Pick<BuildOptions, 'sourcemap' | 'minify' | 'outDir'> {
+export type Formats = 'es' | 'cjs' | 'umd'
+
+export interface UserConfig extends Pick<BuildOptions, 'sourcemap' | 'outDir'> {
   /**
    * Path of library entry
    *
@@ -29,7 +30,7 @@ export interface UserConfig
    *
    * @default ['es', 'cjs', 'umd']
    */
-  formats?: LibraryOptions['formats']
+  formats?: Formats[]
   /**
    * ESBuild targets, see https://esbuild.github.io/api/#target and
    * https://esbuild.github.io/content-types/#javascript for more details.
@@ -91,7 +92,6 @@ export async function resolveConfig(
     plugins: config.plugins ?? [],
 
     sourcemap: config.sourcemap ?? false,
-    minify: config.minify ?? 'esbuild',
     outDir: config.outDir ?? 'dist',
 
     test: config.test ?? {},

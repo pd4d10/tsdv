@@ -3,22 +3,6 @@ import os from 'os'
 import path from 'path'
 import { ResolvedConfig } from './config.js'
 
-export function readExternalDeps(pkg: ResolvedConfig['packageJson']) {
-  const deps = Object.keys(pkg.dependencies ?? {})
-  const peerDeps = Object.keys(pkg.peerDependencies ?? {})
-
-  // also add types for peer dependencies, for example:
-  // add @types/react as external for react
-  const typePrefix = '@types/'
-  const peerTypeDeps = peerDeps.flatMap((dep) => {
-    return dep.startsWith(typePrefix) ? [] : [typePrefix + dep]
-  })
-
-  // console.log('deps', peerTypeDeps)
-  const allDeps = [...deps, ...peerDeps, ...peerTypeDeps]
-  return allDeps
-}
-
 export async function prepareApiExtractor() {
   const { default: ts } = await import('typescript')
   const ae = await import('@microsoft/api-extractor')

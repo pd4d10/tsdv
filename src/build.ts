@@ -2,16 +2,52 @@ import fs from 'fs-extra'
 import path from 'path'
 import { build as viteBuild } from 'vite'
 import { execa } from 'execa'
-import { ResolvedConfig } from './config.js'
-import {
-  resolveTempFile,
-  prepareApiExtractor,
-  readExternalDeps,
-} from './utils.js'
+import { Formats, ResolvedConfig } from './config.js'
+import { resolveTempFile, prepareApiExtractor } from './utils.js'
 import type { IConfigFile } from '@microsoft/api-extractor'
 
-export async function buildJs(config: ResolvedConfig, watch = false) {
-  const externalDeps = readExternalDeps(config.packageJson)
+export async function buildJs(
+  config: ResolvedConfig,
+  watch = false,
+  type: Formats
+) {
+  let externalDeps: string[] = []
+
+  if (type === 'umd') {
+    externalDeps = Object.keys({ ...config.packageJson.peerDependencies })
+  } else if (type === 'es') {
+    externalDeps = Object.keys({
+      ...config.packageJson.peerDependencies,
+      ...config.packageJson.dependencies,
+    })
+  } else if (type === 'cjs') {
+    const deps = Object.keys({ ...config.packageJson.dependencies })
+      // exclude esm packages, bundle them to make it work for cjs
+      .filter((dep) => {
+        const pkgPath = path.resolve(
+          config.root,
+          'node_modules',
+          dep,
+          'package.json'
+        )
+
+        if (!fs.existsSync(pkgPath)) {
+          throw new Error(`${dep} not exists, please install it`)
+        }
+
+        const { type: pkgType } = fs.readJsonSync(pkgPath)
+        return pkgType !== 'module'
+      })
+
+    externalDeps = [
+      ...Object.keys({
+        ...config.packageJson.peerDependencies,
+      }),
+      ...deps,
+    ]
+  }
+
+  // console.log(type, externalDeps)
 
   await viteBuild({
     root: config.root,
@@ -19,18 +55,19 @@ export async function buildJs(config: ResolvedConfig, watch = false) {
     clearScreen: false,
     build: {
       outDir: config.outDir,
-      emptyOutDir: !watch,
+      emptyOutDir: false,
+      reportCompressedSize: type === 'umd',
       target: config.target,
-      minify: config.minify,
+      minify: type === 'umd',
       sourcemap: config.sourcemap,
       watch: watch ? {} : null,
       lib: {
         entry: config.entry,
         name: config.name,
-        formats: config.formats,
-        fileName(format) {
+        formats: [type],
+        fileName() {
           const base = path.basename(config.entry, path.extname(config.entry))
-          const ext = format === 'es' ? 'mjs' : format === 'cjs' ? 'cjs' : 'js'
+          const ext = type === 'es' ? 'mjs' : type === 'cjs' ? 'cjs' : 'js'
           return base + '.' + ext
         },
       },
@@ -67,7 +104,17 @@ export async function runTsc(config: ResolvedConfig, watch = false) {
 export async function bundleDts(config: ResolvedConfig) {
   const { Extractor, ExtractorConfig } = await prepareApiExtractor()
 
-  const externalDeps = readExternalDeps(config.packageJson)
+  const deps = Object.keys({
+    ...config.packageJson.peerDependencies,
+    ...config.packageJson.dependencies,
+  })
+
+  // also add types for peer dependencies, for example:
+  // add @types/react as external for react
+  const typeDeps = deps.flatMap((dep) => {
+    return dep.startsWith('@') ? [] : ['@types/' + dep]
+  })
+
   const entry = config.entry
     .replace('src', config.outDir)
     .replace('.ts', '.d.ts')
@@ -87,7 +134,7 @@ export async function bundleDts(config: ResolvedConfig) {
       enabled: true,
       untrimmedFilePath: outFile,
     },
-    bundledPackages: externalDeps,
+    bundledPackages: [...deps, ...typeDeps],
     messages: {
       compilerMessageReporting: messageLevel,
       extractorMessageReporting: messageLevel,
