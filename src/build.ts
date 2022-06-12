@@ -1,29 +1,28 @@
 import fs from 'fs-extra'
 import path from 'path'
-import { build as viteBuild } from 'vite'
+import { build as viteBuild, LibraryFormats } from 'vite'
 import { execa } from 'execa'
-import { Formats, ResolvedConfig, _Formats } from './config.js'
+import { ResolvedConfig } from './config.js'
 import { resolveTempFile, prepareApiExtractor } from './utils.js'
 import type { IConfigFile } from '@microsoft/api-extractor'
 
 export async function buildJs(
   config: ResolvedConfig,
   watch = false,
-  format: Formats
+  format: LibraryFormats
 ) {
-  const minify = format.endsWith('.min')
-  const type = format.replace('.min', '') as _Formats
+  const legacy = format === 'umd' || format === 'iife'
 
   let externalDeps: string[] = []
 
-  if (type === 'umd') {
+  if (legacy) {
     externalDeps = Object.keys({ ...config.packageJson.peerDependencies })
-  } else if (type === 'es') {
+  } else if (format === 'es') {
     externalDeps = Object.keys({
       ...config.packageJson.peerDependencies,
       ...config.packageJson.dependencies,
     })
-  } else if (type === 'cjs') {
+  } else if (format === 'cjs') {
     const deps = Object.keys({ ...config.packageJson.dependencies })
       // exclude esm packages, bundle them to make it work for cjs
       .filter((dep) => {
@@ -57,7 +56,7 @@ export async function buildJs(
     // logLevel: 'silent',
     clearScreen: false,
     build: {
-      minify,
+      minify: legacy,
       outDir: config.outDir,
       emptyOutDir: false,
       // reportCompressedSize: false,
@@ -67,11 +66,11 @@ export async function buildJs(
       lib: {
         entry: config.entry,
         name: config.name,
-        formats: [type],
+        formats: [format],
         fileName() {
           const base = path.basename(config.entry, path.extname(config.entry))
-          const ext = type === 'es' ? 'mjs' : type === 'cjs' ? 'cjs' : 'js'
-          return `${base}${minify ? '.min' : ''}.${ext}`
+          const ext = format === 'es' ? 'mjs' : 'js'
+          return legacy ? `${base}.${format}.${ext}` : `${base}.${ext}`
         },
       },
       rollupOptions: {
@@ -80,7 +79,7 @@ export async function buildJs(
           ...externalDeps.map((dep) => new RegExp(`^${dep}\/`)),
         ],
         output: {
-          inlineDynamicImports: type === 'umd',
+          inlineDynamicImports: legacy,
         },
       },
     },

@@ -4,14 +4,11 @@ import { findUp } from 'find-up'
 import {
   BuildOptions,
   EsbuildTransformOptions,
-  LibraryOptions,
   PluginOption,
+  LibraryFormats,
 } from 'vite'
 import { InlineConfig as VitestConfig } from 'vitest'
 import { camelCase } from 'lodash-es'
-
-export type _Formats = 'es' | 'cjs' | 'umd'
-export type Formats = _Formats | `${_Formats}.min`
 
 export interface UserConfig extends Pick<BuildOptions, 'sourcemap' | 'outDir'> {
   /**
@@ -29,9 +26,9 @@ export interface UserConfig extends Pick<BuildOptions, 'sourcemap' | 'outDir'> {
   /**
    * Output bundle formats
    *
-   * @default ['es', 'cjs', 'umd.min']
+   * @default ['es', 'cjs', 'umd']
    */
-  formats?: Formats[]
+  formats?: LibraryFormats[]
   /**
    * ESBuild targets, see https://esbuild.github.io/api/#target and
    * https://esbuild.github.io/content-types/#javascript for more details.
@@ -87,7 +84,7 @@ export async function resolveConfig(
     ...config,
     entry,
     name: config.name ?? camelCase(packageJson.name),
-    formats: config.formats ?? ['es', 'cjs', 'umd.min'],
+    formats: config.formats ?? ['es', 'cjs', 'umd'],
     target: config.target ?? 'esnext',
     tsc: config.tsc ?? true,
     plugins: config.plugins ?? [],
