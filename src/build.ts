@@ -79,6 +79,9 @@ export async function buildJs(
           ...externalDeps,
           ...externalDeps.map((dep) => new RegExp(`^${dep}\/`)),
         ],
+        output: {
+          inlineDynamicImports: type === 'umd',
+        },
       },
     },
     plugins: config.plugins,
