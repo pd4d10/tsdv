@@ -1,7 +1,8 @@
 import fs from 'fs-extra'
-import { InlineConfig, resolveConfig } from './config.js'
+import { InlineConfig, UserConfig } from './config.js'
 
 export async function watch(config: InlineConfig) {
+  const { resolveConfig } = await import('./config.js')
   const resolved = await resolveConfig(config)
   const { runTsc, buildJs } = await import('./build.js')
 
@@ -13,6 +14,7 @@ export async function watch(config: InlineConfig) {
 }
 
 export async function build(config: InlineConfig) {
+  const { resolveConfig } = await import('./config.js')
   const resolved = await resolveConfig(config)
   const { runTsc, buildJs, bundleDts } = await import('./build.js')
 
@@ -28,11 +30,15 @@ export async function build(config: InlineConfig) {
 }
 
 export async function test(config: InlineConfig) {
+  const { resolveConfig } = await import('./config.js')
   const resolved = await resolveConfig(config)
 
   const { runTest } = await import('./test.js')
   await runTest(resolved)
 }
 
-export type { UserConfig } from './config.js'
-export { defineConfig } from './config.js'
+export type { UserConfig }
+
+export function defineConfig(config: UserConfig) {
+  return config
+}

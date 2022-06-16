@@ -59,15 +59,9 @@ export interface ResolvedConfig extends Required<UserConfig> {
   packageJson: any // TODO:
 }
 
-export function defineConfig(config: UserConfig) {
-  return config
-}
-
 export async function readConfig() {
-  const file = await findUp('tsdv.config.mjs')
-  if (!file) return {}
-
-  return import(file)
+  const { loadConfig } = await import('c12')
+  return await loadConfig<InlineConfig>({ name: 'tsdv', rcFile: false })
 }
 
 export async function resolveConfig(
