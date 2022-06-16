@@ -4,7 +4,7 @@ import { findUp } from 'find-up'
 import {
   BuildOptions,
   EsbuildTransformOptions,
-  PluginOption,
+  UserConfig as ViteConfig,
   LibraryFormats,
 } from 'vite'
 import { InlineConfig as VitestConfig } from 'vitest'
@@ -43,9 +43,9 @@ export interface UserConfig extends Pick<BuildOptions, 'sourcemap' | 'outDir'> {
    */
   tsc?: boolean
   /**
-   * Vite plugins
+   * Vite Config Overrides
    */
-  plugins?: PluginOption[]
+  vite?: ViteConfig
   /**
    * Vitest config
    */
@@ -81,7 +81,7 @@ export async function resolveConfig(
     formats: config.formats ?? ['es', 'cjs', 'umd'],
     target: config.target ?? 'esnext',
     tsc: config.tsc ?? true,
-    plugins: config.plugins ?? [],
+    vite: config ?? {},
 
     sourcemap: config.sourcemap ?? false,
     outDir: config.outDir ?? 'dist',

@@ -1,6 +1,11 @@
 import fs from 'fs-extra'
 import path from 'path'
-import { build as viteBuild, LibraryFormats } from 'vite'
+import {
+  build as viteBuild,
+  UserConfig as ViteConfig,
+  LibraryFormats,
+  mergeConfig,
+} from 'vite'
 import { execa } from 'execa'
 import { ResolvedConfig } from './config.js'
 import { resolveTempFile, prepareApiExtractor } from './utils.js'
@@ -51,7 +56,7 @@ export async function buildJs(
 
   // console.log(type, externalDeps)
 
-  await viteBuild({
+  const viteConfig: ViteConfig = {
     root: config.root,
     // logLevel: 'silent',
     clearScreen: false,
@@ -83,8 +88,9 @@ export async function buildJs(
         },
       },
     },
-    plugins: config.plugins,
-  })
+  }
+
+  await viteBuild(mergeConfig(viteConfig, config.vite))
 }
 
 export async function runTsc(config: ResolvedConfig, watch = false) {
