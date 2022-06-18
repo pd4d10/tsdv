@@ -81,7 +81,7 @@ export async function resolveConfig(
     formats: config.formats ?? ['es', 'cjs', 'umd'],
     target: config.target ?? 'esnext',
     tsc: config.tsc ?? true,
-    vite: config ?? {},
+    vite: config.vite ?? {},
 
     sourcemap: config.sourcemap ?? false,
     outDir: config.outDir ?? 'dist',
