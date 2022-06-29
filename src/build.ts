@@ -151,6 +151,7 @@ export async function bundleDts(config: ResolvedConfig) {
       extractorMessageReporting: messageLevel,
       tsdocMessageReporting: messageLevel,
     },
+    enumMemberOrder: 'by-name' as any,
   }
   const aeConfigFile = await resolveTempFile(config, 'api-extractor.json')
   await fs.writeJson(aeConfigFile, aeConfig)
