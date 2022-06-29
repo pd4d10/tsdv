@@ -10,8 +10,7 @@ cli.command('watch').action(async () => {
 })
 
 cli.command('build').action(async () => {
-  const { config, ...a } = await readConfig()
-  console.log(config, a)
+  const { config } = await readConfig()
   await build(config)
 })
 
