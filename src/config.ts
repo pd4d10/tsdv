@@ -45,7 +45,7 @@ export interface UserConfig extends Pick<BuildOptions, 'sourcemap' | 'outDir'> {
   /**
    * Vite Config Overrides
    */
-  vite?: ViteConfig
+  vite?: ViteConfig | ((env: { format: LibraryFormats }) => ViteConfig)
   /**
    * Vitest config
    */

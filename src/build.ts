@@ -90,7 +90,10 @@ export async function buildJs(
     },
   }
 
-  await viteBuild(mergeConfig(viteConfig, config.vite))
+  const overrides =
+    typeof config.vite === 'function' ? config.vite({ format }) : config.vite
+
+  await viteBuild(mergeConfig(viteConfig, overrides))
 }
 
 export async function runTsc(config: ResolvedConfig, watch = false) {
