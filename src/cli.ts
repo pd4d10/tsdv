@@ -6,17 +6,17 @@ const cli = cac('tsdv').help()
 
 cli.command('watch').action(async () => {
   const { config } = await readConfig()
-  await watch(config)
+  await watch(config ?? {})
 })
 
 cli.command('build').action(async () => {
   const { config } = await readConfig()
-  await build(config)
+  await build(config ?? {})
 })
 
 cli.command('test').action(async () => {
-  const { config } = await readConfig()
-  await test(config)
+  const { config = {} } = await readConfig()
+  await test(config ?? {})
 })
 
 cli.parse()
