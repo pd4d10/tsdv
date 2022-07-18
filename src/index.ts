@@ -1,5 +1,40 @@
+import path from 'path'
 import fs from 'fs-extra'
+import deepmerge from 'deepmerge'
 import { InlineConfig, UserConfig } from './config.js'
+
+export async function sync(config: InlineConfig) {
+  const { resolveConfig } = await import('./config.js')
+  const resolved = await resolveConfig(config)
+
+  const tsconfig = deepmerge(
+    {
+      include: ['src'],
+      compilerOptions: {
+        rootDir: 'src',
+        outDir: 'dist',
+        skipLibCheck: true,
+        target: 'ESNext',
+        module: 'ESNext',
+        strict: true,
+        moduleResolution: 'node',
+        esModuleInterop: true,
+        resolveJsonModule: true,
+        composite: true,
+        emitDeclarationOnly: true,
+      },
+    },
+    resolved.tsconfig
+  )
+
+  console.log('xxxxxxxxxxxx')
+
+  await fs.writeFile(
+    path.resolve(resolved.root, 'tsconfig.json'),
+    '// Genenrated by `tsdv sync`, do not edit by hand\n' +
+      JSON.stringify(tsconfig, null, 2)
+  )
+}
 
 export async function watch(config: InlineConfig) {
   const { resolveConfig } = await import('./config.js')

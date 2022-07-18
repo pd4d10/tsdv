@@ -37,6 +37,10 @@ export interface UserConfig extends Pick<BuildOptions, 'sourcemap' | 'outDir'> {
    */
   target?: EsbuildTransformOptions['target']
   /**
+   * tsconfig.json overrides
+   */
+  tsconfig?: Record<string, any>
+  /**
    * Whether to run `tsc` to generate the typescript definition file.
    *
    * @default true
@@ -80,6 +84,8 @@ export async function resolveConfig(
     name: config.name ?? camelCase(packageJson.name),
     formats: config.formats ?? ['es', 'cjs', 'umd'],
     target: config.target ?? 'esnext',
+
+    tsconfig: {},
     tsc: config.tsc ?? true,
     vite: config.vite ?? {},
 
