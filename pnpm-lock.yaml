@@ -5,6 +5,7 @@ specifiers:
   '@types/fs-extra': ^9.0.13
   '@types/lodash-es': ^4.17.6
   '@types/node': ^18.0.6
+  builtin-modules: ^3.3.0
   c12: ^0.2.8
   cac: ^6.7.12
   deepmerge: ^4.2.2
@@ -22,6 +23,7 @@ dependencies:
   '@types/fs-extra': 9.0.13
   '@types/lodash-es': 4.17.6
   '@types/node': 18.0.6
+  builtin-modules: 3.3.0
   c12: 0.2.8
   cac: 6.7.12
   deepmerge: 4.2.2
@@ -204,6 +206,11 @@ packages:
 
   /browser-process-hrtime/1.0.0:
     resolution: {integrity: sha512-9o5UecI3GhkpM6DrXr69PblIuWxPKk9Y0jHBRhdocZ2y7YECBFCsHm79Pr3OyR2AvjhDkabFJaDJMYRazHgsow==}
+
+  /builtin-modules/3.3.0:
+    resolution: {integrity: sha512-zhaCDicdLuWN5UbN5IMnFqNMhNfo919sH85y2/ea+5Yg9TsTkeZxpL+JLbp6cgYFS4sRLp3YV4S6yDuqVWHYOw==}
+    engines: {node: '>=6'}
+    dev: false
 
   /c12/0.2.8:
     resolution: {integrity: sha512-JomSyVwGnqndRdVVW6SGnHUeHIfJFQNe/4zPFK6zLKPQm8US+hNr4kZP7xeNnzjn3jnQUsBbPdT85fm8K5Pr4A==}

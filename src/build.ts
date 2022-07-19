@@ -7,6 +7,7 @@ import {
   mergeConfig,
 } from 'vite'
 import { execa } from 'execa'
+import nodeBuiltinModules from 'builtin-modules/static.js'
 import { ResolvedConfig } from './config.js'
 import { resolveTempFile, prepareApiExtractor } from './utils.js'
 import type { IConfigFile } from '@microsoft/api-extractor'
@@ -18,15 +19,19 @@ export async function buildJs(
 ) {
   const legacy = format === 'umd' || format === 'iife'
 
-  let externalDeps: string[] = []
+  const externalDeps = [...nodeBuiltinModules]
 
   if (legacy) {
-    externalDeps = Object.keys({ ...config.packageJson.peerDependencies })
+    externalDeps.push(
+      ...Object.keys({ ...config.packageJson.peerDependencies })
+    )
   } else if (format === 'es') {
-    externalDeps = Object.keys({
-      ...config.packageJson.peerDependencies,
-      ...config.packageJson.dependencies,
-    })
+    externalDeps.push(
+      ...Object.keys({
+        ...config.packageJson.peerDependencies,
+        ...config.packageJson.dependencies,
+      })
+    )
   } else if (format === 'cjs') {
     const deps = Object.keys({ ...config.packageJson.dependencies })
       // exclude esm packages, bundle them to make it work for cjs
@@ -46,12 +51,10 @@ export async function buildJs(
         return pkgType !== 'module'
       })
 
-    externalDeps = [
-      ...Object.keys({
-        ...config.packageJson.peerDependencies,
-      }),
-      ...deps,
-    ]
+    externalDeps.push(
+      ...Object.keys({ ...config.packageJson.peerDependencies }),
+      ...deps
+    )
   }
 
   // console.log(type, externalDeps)
