@@ -69,26 +69,18 @@ export async function buildJs(
       emptyOutDir: false,
       // reportCompressedSize: false,
       target: config.target,
-      sourcemap: config.sourcemap,
       watch: watch ? {} : null,
       lib: {
         entry: config.entry,
         name: config.name,
         formats: [format],
-        fileName() {
-          const base = path.basename(config.entry, path.extname(config.entry))
-          const ext = format === 'es' ? 'mjs' : 'js'
-          return legacy ? `${base}.${format}.${ext}` : `${base}.${ext}`
-        },
+        fileName: path.basename(config.entry, path.extname(config.entry)),
       },
       rollupOptions: {
         external: [
           ...externalDeps,
           ...externalDeps.map((dep) => new RegExp(`^${dep}\/`)),
         ],
-        output: {
-          inlineDynamicImports: legacy,
-        },
       },
     },
   }

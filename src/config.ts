@@ -2,7 +2,6 @@ import fs from 'fs-extra'
 import path from 'path'
 import { findUp } from 'find-up'
 import {
-  BuildOptions,
   EsbuildTransformOptions,
   UserConfig as ViteConfig,
   LibraryFormats,
@@ -10,7 +9,7 @@ import {
 import { InlineConfig as VitestConfig } from 'vitest'
 import { camelCase } from 'lodash-es'
 
-export interface UserConfig extends Pick<BuildOptions, 'sourcemap' | 'outDir'> {
+export interface UserConfig {
   /**
    * Path of library entry
    *
@@ -36,6 +35,12 @@ export interface UserConfig extends Pick<BuildOptions, 'sourcemap' | 'outDir'> {
    * @default 'esnext'
    */
   target?: EsbuildTransformOptions['target']
+  /**
+   * Build output directory
+   *
+   * @default 'dist'
+   */
+  outDir?: string
   /**
    * tsconfig.json overrides
    */
@@ -89,7 +94,6 @@ export async function resolveConfig(
     tsc: config.tsc ?? true,
     vite: config.vite ?? {},
 
-    sourcemap: config.sourcemap ?? false,
     outDir: config.outDir ?? 'dist',
 
     test: config.test ?? {},
