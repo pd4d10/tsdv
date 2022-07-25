@@ -1,7 +1,8 @@
 import fs from 'fs-extra'
 import os from 'os'
 import path from 'path'
-import { ResolvedConfig } from './config.js'
+import { LibraryFormats } from 'vite'
+import { ResolvedConfig, UserConfig } from './config.js'
 
 export async function prepareApiExtractor() {
   const { default: ts } = await import('typescript')
@@ -70,4 +71,12 @@ export async function resolveTempFile(
   )
   await fs.ensureDir(path.dirname(file))
   return file
+}
+
+export function getViteConfig(
+  config: UserConfig['vite'],
+  env: { format: LibraryFormats }
+) {
+  if (typeof config === 'function') return config(env)
+  return config ?? {}
 }

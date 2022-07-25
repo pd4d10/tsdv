@@ -9,7 +9,7 @@ import {
 import { execa } from 'execa'
 import nodeBuiltinModules from 'builtin-modules/static.js'
 import { ResolvedConfig } from './config.js'
-import { resolveTempFile, prepareApiExtractor } from './utils.js'
+import { resolveTempFile, prepareApiExtractor, getViteConfig } from './utils.js'
 import type { IConfigFile } from '@microsoft/api-extractor'
 
 export async function buildJs(
@@ -85,10 +85,9 @@ export async function buildJs(
     },
   }
 
-  const overrides =
-    typeof config.vite === 'function' ? config.vite({ format }) : config.vite
-
-  await viteBuild(mergeConfig(viteConfig, overrides))
+  await viteBuild(
+    mergeConfig(viteConfig, getViteConfig(config.vite, { format }))
+  )
 }
 
 export async function runTsc(config: ResolvedConfig, watch = false) {

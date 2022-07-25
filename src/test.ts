@@ -1,4 +1,5 @@
 import { ResolvedConfig } from './config.js'
+import { getViteConfig } from './utils.js'
 
 export async function runTest(config: ResolvedConfig) {
   const { startVitest } = await import('vitest/node')
@@ -8,6 +9,9 @@ export async function runTest(config: ResolvedConfig) {
     [],
     // @ts-ignore
     config.test,
-    mergeConfig({ root: config.root }, config.vite)
+    mergeConfig(
+      { root: config.root },
+      getViteConfig(config.vite, { format: 'iife' })
+    )
   )
 }
