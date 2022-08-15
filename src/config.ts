@@ -1,6 +1,5 @@
 import fs from 'fs-extra'
 import path from 'path'
-import { findUp } from 'find-up'
 import {
   EsbuildTransformOptions,
   UserConfig as ViteConfig,
@@ -10,6 +9,10 @@ import { InlineConfig as VitestConfig } from 'vitest'
 import { camelCase } from 'lodash-es'
 
 export interface UserConfig {
+  /**
+   * Project root directory
+   */
+  root?: string
   /**
    * Path of library entry
    *
@@ -64,7 +67,6 @@ export interface UserConfig {
 export interface InlineConfig extends UserConfig {}
 
 export interface ResolvedConfig extends Required<UserConfig> {
-  root: string
   packageJson: any // TODO:
 }
 
@@ -76,30 +78,22 @@ export async function readConfig() {
 export async function resolveConfig(
   config: InlineConfig
 ): Promise<ResolvedConfig> {
-  const filePath = await findUp('package.json')
-  if (!filePath) throw new Error('package.json not found')
-
-  const packageJson = await fs.readJson(filePath)
-
-  const entry = config.entry ?? 'src/index.ts'
+  const root = config.root ?? process.cwd()
+  const packageJson = await fs.readJson(path.resolve(root, 'package.json'))
 
   return {
-    ...config,
-    entry,
+    root,
+    entry: config.entry ?? 'src/index.ts',
     name: config.name ?? camelCase(packageJson.name),
     formats: config.formats ?? ['es', 'cjs', 'umd'],
     target: config.target ?? 'esnext',
-
     tsconfig: {},
     tsc: config.tsc ?? true,
     vite: config.vite ?? {},
-
     outDir: config.outDir ?? 'dist',
-
     test: config.test ?? {},
 
     // extra fields
-    root: path.dirname(filePath),
     packageJson,
   }
 }
