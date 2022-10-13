@@ -1,6 +1,6 @@
 import { cac } from 'cac'
-import { watch, build, test, sync } from './index.js'
 import { readConfig } from './config.js'
+import { build, sync, test, watch } from './index.js'
 
 const cli = cac('tsdv').help()
 

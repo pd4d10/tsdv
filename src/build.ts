@@ -1,16 +1,16 @@
+import type { IConfigFile } from '@microsoft/api-extractor'
+import nodeBuiltinModules from 'builtin-modules/static.js'
+import { execa } from 'execa'
 import fs from 'fs-extra'
 import path from 'path'
 import {
   build as viteBuild,
-  UserConfig as ViteConfig,
   LibraryFormats,
   mergeConfig,
+  UserConfig as ViteConfig,
 } from 'vite'
-import { execa } from 'execa'
-import nodeBuiltinModules from 'builtin-modules/static.js'
 import { ResolvedConfig } from './config.js'
-import { resolveTempFile, prepareApiExtractor, getViteConfig } from './utils.js'
-import type { IConfigFile } from '@microsoft/api-extractor'
+import { getViteConfig, prepareApiExtractor, resolveTempFile } from './utils.js'
 
 export async function buildJs(
   config: ResolvedConfig,

@@ -1,12 +1,12 @@
 import fs from 'fs-extra'
+import { camelCase } from 'lodash-es'
 import path from 'path'
 import {
   EsbuildTransformOptions,
-  UserConfig as ViteConfig,
   LibraryFormats,
+  UserConfig as ViteConfig,
 } from 'vite'
 import { InlineConfig as VitestConfig } from 'vitest'
-import { camelCase } from 'lodash-es'
 
 export interface UserConfig {
   /**

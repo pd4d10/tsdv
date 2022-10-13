@@ -1,6 +1,6 @@
-import path from 'path'
-import fs from 'fs-extra'
 import deepmerge from 'deepmerge'
+import fs from 'fs-extra'
+import path from 'path'
 import { InlineConfig, UserConfig } from './config.js'
 
 export async function sync(config: InlineConfig) {
