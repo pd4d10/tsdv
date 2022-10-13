@@ -6,6 +6,7 @@ export async function runTest(config: ResolvedConfig) {
   const { mergeConfig } = await import('vite')
 
   await startVitest(
+    'test',
     [],
     // @ts-ignore
     config.test,
