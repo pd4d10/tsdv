@@ -1,6 +1,6 @@
 {
   "name": "tsdv",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "TypeScript package development toolkit",
   "type": "module",
   "bin": {
