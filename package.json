@@ -7,8 +7,7 @@
     "tsdv": "lib/cli.js"
   },
   "files": [
-    "lib",
-    "vitest"
+    "lib"
   ],
   "types": "./lib/index.d.ts",
   "main": "./lib/index.js",
@@ -22,8 +21,7 @@
   "keywords": [
     "library",
     "typescript",
-    "vite",
-    "vitest"
+    "vite"
   ],
   "author": "Rongjian Zhang",
   "license": "MIT",
@@ -44,8 +42,7 @@
     "find-up": "^6.3.0",
     "fs-extra": "^11.1.0",
     "lodash-es": "^4.17.21",
-    "vite": "^4.0.0",
-    "vitest": "^0.25.6"
+    "vite": "^4.0.0"
   },
   "devDependencies": {
     "jsdom": "^20.0.3",

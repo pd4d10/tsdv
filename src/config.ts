@@ -6,7 +6,6 @@ import {
   LibraryFormats,
   UserConfig as ViteConfig,
 } from 'vite'
-import { InlineConfig as VitestConfig } from 'vitest'
 
 export interface UserConfig {
   /**
@@ -58,10 +57,6 @@ export interface UserConfig {
    * Vite Config Overrides
    */
   vite?: ViteConfig | ((env: { format: LibraryFormats }) => ViteConfig)
-  /**
-   * Vitest config
-   */
-  test?: VitestConfig
 }
 
 export interface InlineConfig extends UserConfig {}
@@ -91,7 +86,6 @@ export async function resolveConfig(
     tsc: config.tsc ?? true,
     vite: config.vite ?? {},
     outDir: config.outDir ?? 'dist',
-    test: config.test ?? {},
 
     // extra fields
     packageJson,

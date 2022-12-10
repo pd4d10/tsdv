@@ -64,14 +64,6 @@ export async function build(config: InlineConfig) {
   await writeDts()
 }
 
-export async function test(config: InlineConfig) {
-  const { resolveConfig } = await import('./config.js')
-  const resolved = await resolveConfig(config)
-
-  const { runTest } = await import('./test.js')
-  await runTest(resolved)
-}
-
 export type { UserConfig }
 
 export function defineConfig(config: UserConfig) {
